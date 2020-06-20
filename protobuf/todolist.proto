@@ -7,11 +7,11 @@ package protobuf;
 
 service Todolist {
 
-  rpc addTodo (TodoRequest) returns (TodoReply) {}
+  rpc AddTodo (TodoRequest) returns (TodoReply) {}
 
   rpc RemoveTodo (TodoRequest) returns (TodoReply) {}
 
-  rpc getTodoAll (EmptyRequest) returns (TodoAllResponse) {}
+  rpc GetTodoAll (EmptyRequest) returns (TodoAllResponse) {}
 }
 
 
