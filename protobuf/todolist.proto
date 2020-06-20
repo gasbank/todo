@@ -19,5 +19,5 @@ message TodoRequest {
 
 // 20000: 200 OK
 message TodoReply {
-  string reponseCode = 1;
+  string responseCode = 1;
 }
