@@ -99,7 +99,8 @@ int grpcworld_todolist_main(int argc, char** argv) {
         }
     }
     else {
-        target_str = "localhost:50051";
+        //target_str = "localhost:50051";
+        target_str = "192.168.35.118:50051";
     }
 
     TodoListClient todoList(grpc::CreateChannel(target_str, grpc::InsecureChannelCredentials()));

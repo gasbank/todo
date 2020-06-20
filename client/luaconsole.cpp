@@ -36,7 +36,10 @@ public:
     GreeterClient(std::shared_ptr<Channel> channel);
     std::string SayHello(const std::string& user);
     std::string AddNewTodo(const std::string& user);
+private:
+    std::unique_ptr<Greeter::Stub> stub_;
 };
+
 
 struct LuaConsole {
   char InputBuf[256];
@@ -145,10 +148,24 @@ struct LuaConsole {
     // TODO: display items starting from the bottom
 
     if (ImGui::SmallButton("Request RPC 'SayHello'")) {
-        /*GreeterClient greeter(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()));
+        GreeterClient greeter(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()));
         std::string user("world");
         std::string reply = greeter.SayHello(user);
-        std::cout << "Greeter received: " << reply << std::endl;*/
+        std::cout << "Greeter received: " << reply << std::endl;
+    }
+    ImGui::SameLine();
+    if (ImGui::SmallButton("Request RPC 'AddTodo'")) {
+        GreeterClient greeter(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()));
+        std::string user("world");
+        std::string reply = greeter.SayHello(user);
+        std::cout << "Greeter received: " << reply << std::endl;
+    }
+    ImGui::SameLine();
+    if (ImGui::SmallButton("Request RPC 'RemoveTodo'")) {
+        GreeterClient greeter(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()));
+        std::string user("world");
+        std::string reply = greeter.SayHello(user);
+        std::cout << "Greeter received: " << reply << std::endl;
     }
     ImGui::SameLine();
     if (ImGui::SmallButton("Add Dummy Text")) {
