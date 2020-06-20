@@ -127,7 +127,7 @@ else()
 endif()
 
 # Proto file
-get_filename_component(hw_proto "protos/helloworld.proto" ABSOLUTE)
+get_filename_component(hw_proto "${CMAKE_CURRENT_SOURCE_DIR}/../protos/helloworld.proto" ABSOLUTE)
 get_filename_component(hw_proto_path "${hw_proto}" PATH)
 
 # Generated sources
@@ -183,6 +183,13 @@ add_executable(NetworkWorld
     imgui/imgui_impl_sdl.h
 )
 
+# 테스트용 서버
+add_executable(greeter_server
+  greeter_server.cc
+  ${hw_proto_srcs}
+  ${hw_grpc_srcs}
+)
+
 #set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS /SUBSYSTEM:CONSOLE)
 
 #find_library(GLAD_LIBRARY glad PATHS ${CMAKE_SOURCE_DIR}/glad)
@@ -193,7 +200,15 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
     SDL2main
     SDL2-static
     lua
-    gRPC::grpc++
+    ${_REFLECTION}
+    ${_GRPC_GRPCPP}
+    ${_PROTOBUF_LIBPROTOBUF}
+)
+
+target_link_libraries(greeter_server
+    ${_REFLECTION}
+    ${_GRPC_GRPCPP}
+    ${_PROTOBUF_LIBPROTOBUF}
 )
 
 add_custom_command(

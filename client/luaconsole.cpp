@@ -9,6 +9,35 @@
 
 #include "lua.hpp"
 
+
+#include <iostream>
+#include <memory>
+#include <string>
+
+#include <grpcpp/grpcpp.h>
+
+#ifdef BAZEL_BUILD
+#include "examples/protos/helloworld.grpc.pb.h"
+#else
+#include "helloworld.grpc.pb.h"
+#endif
+
+using grpc::Channel;
+using grpc::ClientContext;
+using grpc::Status;
+using helloworld::HelloRequest;
+using helloworld::HelloReply;
+using helloworld::Greeter;
+
+
+
+class GreeterClient {
+public:
+    GreeterClient(std::shared_ptr<Channel> channel);
+    std::string SayHello(const std::string& user);
+    std::string AddNewTodo(const std::string& user);
+};
+
 struct LuaConsole {
   char InputBuf[256];
   ImVector<char *> Items;
@@ -115,6 +144,13 @@ struct LuaConsole {
 
     // TODO: display items starting from the bottom
 
+    if (ImGui::SmallButton("Request RPC 'SayHello'")) {
+        /*GreeterClient greeter(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()));
+        std::string user("world");
+        std::string reply = greeter.SayHello(user);
+        std::cout << "Greeter received: " << reply << std::endl;*/
+    }
+    ImGui::SameLine();
     if (ImGui::SmallButton("Add Dummy Text")) {
       AddLog("%d some text", Items.Size);
       AddLog("some more text");

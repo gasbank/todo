@@ -59,7 +59,33 @@ public:
 
         // Act upon its status.
         if (status.ok()) {
-            return reply.message() + reply.message2();
+            return reply.message() + reply.message2() + reply.message3();
+        }
+        else {
+            std::cout << status.error_code() << ": " << status.error_message()
+                << std::endl;
+            return "RPC failed";
+        }
+    }
+
+    std::string AddNewTodo(const std::string& user) {
+        // Data we are sending to the server.
+        HelloRequest request;
+        request.set_name(user);
+
+        // Container for the data we expect from the server.
+        HelloReply reply;
+
+        // Context for the client. It could be used to convey extra information to
+        // the server and/or tweak certain RPC behaviors.
+        ClientContext context;
+
+        // The actual RPC.
+        Status status = stub_->AddNewTodo(&context, request, &reply);
+
+        // Act upon its status.
+        if (status.ok()) {
+            return reply.message() + reply.message2() + reply.message3();
         }
         else {
             std::cout << status.error_code() << ": " << status.error_message()
@@ -101,11 +127,14 @@ int grpcworld_main(int argc, char** argv) {
     else {
         target_str = "localhost:50051";
     }
-    GreeterClient greeter(grpc::CreateChannel(
-        target_str, grpc::InsecureChannelCredentials()));
+    GreeterClient greeter(grpc::CreateChannel(target_str, grpc::InsecureChannelCredentials()));
     std::string user("world");
     std::string reply = greeter.SayHello(user);
     std::cout << "Greeter received: " << reply << std::endl;
+
+    std::string user2("addnewtodouser");
+    std::string reply2 = greeter.AddNewTodo(user2);
+    std::cout << "Greeter addnewtodo received: " << reply2 << std::endl;
 
     return 0;
 }
