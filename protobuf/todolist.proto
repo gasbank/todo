@@ -1,0 +1,26 @@
+
+syntax = "proto3";
+
+option go_package = "google.golang.org/grpc/examples/helloworld/helloworld";
+option java_multiple_files = true;
+option java_package = "io.grpc.examples.helloworld";
+option java_outer_classname = "HelloWorldProto";
+
+package protobuf;
+
+service Todolist {
+
+  rpc addTodo (TodoRequest) returns (TodoReply) {}
+
+  rpc RemoveTodo (TodoRequest) returns (TodoReply) {}
+}
+
+
+message TodoRequest {
+  string item = 1;
+}
+
+// 20000: 200 OK
+message TodoReply {
+  string reponseCode = 1;
+}
