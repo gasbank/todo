@@ -127,7 +127,7 @@ else()
 endif()
 
 # Proto file
-get_filename_component(hw_proto "${CMAKE_CURRENT_SOURCE_DIR}/../protos/helloworld.proto" ABSOLUTE)
+get_filename_component(hw_proto "${CMAKE_CURRENT_SOURCE_DIR}/../protobuf/helloworld.proto" ABSOLUTE)
 get_filename_component(hw_proto_path "${hw_proto}" PATH)
 
 # Generated sources

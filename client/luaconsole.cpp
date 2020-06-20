@@ -15,6 +15,11 @@
 #include <string>
 
 #include <grpcpp/grpcpp.h>
+using grpc::Channel;
+using grpc::ClientContext;
+using grpc::Status;
+
+
 
 #ifdef BAZEL_BUILD
 #include "examples/protos/helloworld.grpc.pb.h"
@@ -22,14 +27,9 @@
 #include "helloworld.grpc.pb.h"
 #endif
 
-using grpc::Channel;
-using grpc::ClientContext;
-using grpc::Status;
 using helloworld::HelloRequest;
 using helloworld::HelloReply;
 using helloworld::Greeter;
-
-
 
 class GreeterClient {
 public:
@@ -39,6 +39,26 @@ public:
 private:
     std::unique_ptr<Greeter::Stub> stub_;
 };
+
+
+#ifdef BAZEL_BUILD
+#include "examples/protos/todolist.grpc.pb.h"
+#else
+#include "todolist.grpc.pb.h"
+#endif
+using protobuf::Todolist;
+using protobuf::TodoRequest;
+using protobuf::TodoReply;
+
+class TodoListClient {
+public:
+    TodoListClient(std::shared_ptr<Channel> channel);
+    std::string AddTodo(const std::string& todoItem);
+private:
+    std::unique_ptr<Todolist::Stub> stub_;
+};
+
+const char* ServerAddrItems[] = { "localhost:50051", "192.168.35.118:50051" };
 
 
 struct LuaConsole {
@@ -51,6 +71,10 @@ struct LuaConsole {
   bool AutoScroll;
   bool ScrollToBottom;
   lua_State *l;
+  char                    ServerAddressInputBuf[256] = "localhost:50051";
+  char                    TodoInputBuf[256] = "<todo goes here>";
+  int ServerAddrItemCurrentIdx = 0;                    // Here our selection data is an index.
+
 
   LuaConsole() {
     ClearLog();
@@ -147,27 +171,37 @@ struct LuaConsole {
 
     // TODO: display items starting from the bottom
 
-    if (ImGui::SmallButton("Request RPC 'SayHello'")) {
-        GreeterClient greeter(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()));
-        std::string user("world");
+    if (ImGui::SmallButton("RPC 'Greeter.SayHello'")) {
+        GreeterClient greeter(grpc::CreateChannel(ServerAddrItems[ServerAddrItemCurrentIdx], grpc::InsecureChannelCredentials()));
+        std::string user(TodoInputBuf);
         std::string reply = greeter.SayHello(user);
         std::cout << "Greeter received: " << reply << std::endl;
+        AddLog("RPC REPLY: %s\n", reply.c_str());
     }
     ImGui::SameLine();
-    if (ImGui::SmallButton("Request RPC 'AddTodo'")) {
-        GreeterClient greeter(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()));
-        std::string user("world");
-        std::string reply = greeter.SayHello(user);
-        std::cout << "Greeter received: " << reply << std::endl;
+    if (ImGui::SmallButton("RPC 'Todo.AddTodo'")) {
+        TodoListClient todolist(grpc::CreateChannel(ServerAddrItems[ServerAddrItemCurrentIdx], grpc::InsecureChannelCredentials()));
+        std::string item(TodoInputBuf);
+        std::string reply = todolist.AddTodo(item);
+        std::cout << "Todo.AddTodo received: " << reply << std::endl;
+        AddLog("RPC REPLY: %s\n", reply.c_str());
     }
     ImGui::SameLine();
-    if (ImGui::SmallButton("Request RPC 'RemoveTodo'")) {
-        GreeterClient greeter(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()));
-        std::string user("world");
-        std::string reply = greeter.SayHello(user);
-        std::cout << "Greeter received: " << reply << std::endl;
+    if (ImGui::SmallButton("RPC 'Todo.RemoveTodo'")) {
+        TodoListClient todolist(grpc::CreateChannel(ServerAddrItems[ServerAddrItemCurrentIdx], grpc::InsecureChannelCredentials()));
+        std::string item(TodoInputBuf);
+        std::string reply = todolist.AddTodo(item);
+        std::cout << "Todo.AddTodo received: " << reply << std::endl;
+        AddLog("RPC REPLY: %s\n", reply.c_str());
     }
     ImGui::SameLine();
+    if (ImGui::SmallButton("RPC 'Todo.ListAll'")) {
+        TodoListClient todolist(grpc::CreateChannel(ServerAddrItems[ServerAddrItemCurrentIdx], grpc::InsecureChannelCredentials()));
+        std::string item(TodoInputBuf);
+        std::string reply = todolist.AddTodo(item);
+        std::cout << "Todo.AddTodo received: " << reply << std::endl;
+        AddLog("RPC REPLY: %s\n", reply.c_str());
+    }
     if (ImGui::SmallButton("Add Dummy Text")) {
       AddLog("%d some text", Items.Size);
       AddLog("some more text");
@@ -200,6 +234,27 @@ struct LuaConsole {
     ImGui::SameLine();
     Filter.Draw("Filter (\"incl,-excl\") (\"error\")", 180);
     ImGui::Separator();
+
+    //ImGui::InputText("Server Address", ServerAddressInputBuf, IM_ARRAYSIZE(InputBuf));
+    
+    static ImGuiComboFlags flags = 0;
+    const char* combo_label = ServerAddrItems[ServerAddrItemCurrentIdx];  // Label to preview before opening the combo (technically could be anything)(
+    if (ImGui::BeginCombo("Server List", combo_label, flags))
+    {
+        for (int n = 0; n < IM_ARRAYSIZE(ServerAddrItems); n++)
+        {
+            const bool is_selected = (ServerAddrItemCurrentIdx == n);
+            if (ImGui::Selectable(ServerAddrItems[n], is_selected))
+                ServerAddrItemCurrentIdx = n;
+
+            // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();
+        }
+        ImGui::EndCombo();
+    }
+    ImGui::InputText("Todo Text", TodoInputBuf, IM_ARRAYSIZE(TodoInputBuf));
+
 
     // Reserve enough left-over height for 1 separator + 1 input text
     const float footer_height_to_reserve =
