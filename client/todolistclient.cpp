@@ -53,7 +53,7 @@ std::string TodoListClient::AddTodo(const std::string& todoStr) {
     ClientContext context;
 
     // The actual RPC.
-    Status status = stub_->addTodo(&context, request, &reply);
+    Status status = stub_->AddTodo(&context, request, &reply);
 
     // Act upon its status.
     if (status.ok()) {
@@ -107,7 +107,7 @@ std::vector<std::string> TodoListClient::GetTodoAll() {
     ClientContext context;
 
     // The actual RPC.
-    Status status = stub_->getTodoAll(&context, request, &reply);
+    Status status = stub_->GetTodoAll(&context, request, &reply);
 
     std::vector<std::string> todoList;
     // Act upon its status.
