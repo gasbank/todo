@@ -34,7 +34,7 @@ type TodoRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Item string `protobuf:"bytes,1,opt,name=item,proto3" json:"item,omitempty"`
+	Item *Todo `protobuf:"bytes,1,opt,name=item,proto3" json:"item,omitempty"`
 }
 
 func (x *TodoRequest) Reset() {
@@ -69,11 +69,11 @@ func (*TodoRequest) Descriptor() ([]byte, []int) {
 	return file_protobuf_todolist_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *TodoRequest) GetItem() string {
+func (x *TodoRequest) GetItem() *Todo {
 	if x != nil {
 		return x.Item
 	}
-	return ""
+	return nil
 }
 
 // 20000: 200 OK
@@ -124,28 +124,171 @@ func (x *TodoReply) GetResponseCode() string {
 	return ""
 }
 
+type EmptyRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *EmptyRequest) Reset() {
+	*x = EmptyRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_protobuf_todolist_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *EmptyRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EmptyRequest) ProtoMessage() {}
+
+func (x *EmptyRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_protobuf_todolist_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EmptyRequest.ProtoReflect.Descriptor instead.
+func (*EmptyRequest) Descriptor() ([]byte, []int) {
+	return file_protobuf_todolist_proto_rawDescGZIP(), []int{2}
+}
+
+type TodoAllResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Items []*Todo `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
+}
+
+func (x *TodoAllResponse) Reset() {
+	*x = TodoAllResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_protobuf_todolist_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TodoAllResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TodoAllResponse) ProtoMessage() {}
+
+func (x *TodoAllResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_protobuf_todolist_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TodoAllResponse.ProtoReflect.Descriptor instead.
+func (*TodoAllResponse) Descriptor() ([]byte, []int) {
+	return file_protobuf_todolist_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *TodoAllResponse) GetItems() []*Todo {
+	if x != nil {
+		return x.Items
+	}
+	return nil
+}
+
+type Todo struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Todo string `protobuf:"bytes,1,opt,name=todo,proto3" json:"todo,omitempty"`
+}
+
+func (x *Todo) Reset() {
+	*x = Todo{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_protobuf_todolist_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Todo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Todo) ProtoMessage() {}
+
+func (x *Todo) ProtoReflect() protoreflect.Message {
+	mi := &file_protobuf_todolist_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Todo.ProtoReflect.Descriptor instead.
+func (*Todo) Descriptor() ([]byte, []int) {
+	return file_protobuf_todolist_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *Todo) GetTodo() string {
+	if x != nil {
+		return x.Todo
+	}
+	return ""
+}
+
 var File_protobuf_todolist_proto protoreflect.FileDescriptor
 
 var file_protobuf_todolist_proto_rawDesc = []byte{
 	0x0a, 0x17, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x74, 0x6f, 0x64, 0x6f, 0x6c,
 	0x69, 0x73, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x08, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x62, 0x75, 0x66, 0x22, 0x21, 0x0a, 0x0b, 0x54, 0x6f, 0x64, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x69, 0x74, 0x65, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x62, 0x75, 0x66, 0x22, 0x31, 0x0a, 0x0b, 0x54, 0x6f, 0x64, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x12, 0x22, 0x0a, 0x04, 0x69, 0x74, 0x65, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x0e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x6f, 0x64, 0x6f,
 	0x52, 0x04, 0x69, 0x74, 0x65, 0x6d, 0x22, 0x2f, 0x0a, 0x09, 0x54, 0x6f, 0x64, 0x6f, 0x52, 0x65,
 	0x70, 0x6c, 0x79, 0x12, 0x22, 0x0a, 0x0c, 0x72, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x43,
 	0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x72, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x43, 0x6f, 0x64, 0x65, 0x32, 0x7f, 0x0a, 0x08, 0x54, 0x6f, 0x64, 0x6f, 0x6c,
-	0x69, 0x73, 0x74, 0x12, 0x37, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x54, 0x6f, 0x64, 0x6f, 0x12, 0x15,
-	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x6f, 0x64, 0x6f, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
-	0x2e, 0x54, 0x6f, 0x64, 0x6f, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x22, 0x00, 0x12, 0x3a, 0x0a, 0x0a,
-	0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x54, 0x6f, 0x64, 0x6f, 0x12, 0x15, 0x2e, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x6f, 0x64, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x1a, 0x13, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x6f, 0x64,
-	0x6f, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x22, 0x00, 0x42, 0x22, 0x5a, 0x20, 0x67, 0x69, 0x74, 0x68,
-	0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x67, 0x61, 0x73, 0x62, 0x61, 0x6e, 0x6b, 0x2f, 0x74,
-	0x6f, 0x64, 0x6f, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x6e, 0x73, 0x65, 0x43, 0x6f, 0x64, 0x65, 0x22, 0x0e, 0x0a, 0x0c, 0x45, 0x6d, 0x70, 0x74, 0x79,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x37, 0x0a, 0x0f, 0x54, 0x6f, 0x64, 0x6f, 0x41,
+	0x6c, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x24, 0x0a, 0x05, 0x69, 0x74,
+	0x65, 0x6d, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x6f, 0x64, 0x6f, 0x52, 0x05, 0x69, 0x74, 0x65, 0x6d, 0x73,
+	0x22, 0x1a, 0x0a, 0x04, 0x54, 0x6f, 0x64, 0x6f, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x6f, 0x64, 0x6f,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x6f, 0x64, 0x6f, 0x32, 0xc2, 0x01, 0x0a,
+	0x08, 0x54, 0x6f, 0x64, 0x6f, 0x6c, 0x69, 0x73, 0x74, 0x12, 0x37, 0x0a, 0x07, 0x61, 0x64, 0x64,
+	0x54, 0x6f, 0x64, 0x6f, 0x12, 0x15, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e,
+	0x54, 0x6f, 0x64, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x6f, 0x64, 0x6f, 0x52, 0x65, 0x70, 0x6c, 0x79,
+	0x22, 0x00, 0x12, 0x3a, 0x0a, 0x0a, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x54, 0x6f, 0x64, 0x6f,
+	0x12, 0x15, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x6f, 0x64, 0x6f,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
+	0x75, 0x66, 0x2e, 0x54, 0x6f, 0x64, 0x6f, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x22, 0x00, 0x12, 0x41,
+	0x0a, 0x0a, 0x67, 0x65, 0x74, 0x54, 0x6f, 0x64, 0x6f, 0x41, 0x6c, 0x6c, 0x12, 0x16, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e,
+	0x54, 0x6f, 0x64, 0x6f, 0x41, 0x6c, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
+	0x00, 0x42, 0x22, 0x5a, 0x20, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f,
+	0x67, 0x61, 0x73, 0x62, 0x61, 0x6e, 0x6b, 0x2f, 0x74, 0x6f, 0x64, 0x6f, 0x2f, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x62, 0x75, 0x66, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -160,21 +303,28 @@ func file_protobuf_todolist_proto_rawDescGZIP() []byte {
 	return file_protobuf_todolist_proto_rawDescData
 }
 
-var file_protobuf_todolist_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_protobuf_todolist_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_protobuf_todolist_proto_goTypes = []interface{}{
-	(*TodoRequest)(nil), // 0: protobuf.TodoRequest
-	(*TodoReply)(nil),   // 1: protobuf.TodoReply
+	(*TodoRequest)(nil),     // 0: protobuf.TodoRequest
+	(*TodoReply)(nil),       // 1: protobuf.TodoReply
+	(*EmptyRequest)(nil),    // 2: protobuf.EmptyRequest
+	(*TodoAllResponse)(nil), // 3: protobuf.TodoAllResponse
+	(*Todo)(nil),            // 4: protobuf.Todo
 }
 var file_protobuf_todolist_proto_depIdxs = []int32{
-	0, // 0: protobuf.Todolist.addTodo:input_type -> protobuf.TodoRequest
-	0, // 1: protobuf.Todolist.RemoveTodo:input_type -> protobuf.TodoRequest
-	1, // 2: protobuf.Todolist.addTodo:output_type -> protobuf.TodoReply
-	1, // 3: protobuf.Todolist.RemoveTodo:output_type -> protobuf.TodoReply
-	2, // [2:4] is the sub-list for method output_type
-	0, // [0:2] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	4, // 0: protobuf.TodoRequest.item:type_name -> protobuf.Todo
+	4, // 1: protobuf.TodoAllResponse.items:type_name -> protobuf.Todo
+	0, // 2: protobuf.Todolist.addTodo:input_type -> protobuf.TodoRequest
+	0, // 3: protobuf.Todolist.RemoveTodo:input_type -> protobuf.TodoRequest
+	2, // 4: protobuf.Todolist.getTodoAll:input_type -> protobuf.EmptyRequest
+	1, // 5: protobuf.Todolist.addTodo:output_type -> protobuf.TodoReply
+	1, // 6: protobuf.Todolist.RemoveTodo:output_type -> protobuf.TodoReply
+	3, // 7: protobuf.Todolist.getTodoAll:output_type -> protobuf.TodoAllResponse
+	5, // [5:8] is the sub-list for method output_type
+	2, // [2:5] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_protobuf_todolist_proto_init() }
@@ -207,6 +357,42 @@ func file_protobuf_todolist_proto_init() {
 				return nil
 			}
 		}
+		file_protobuf_todolist_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*EmptyRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_protobuf_todolist_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TodoAllResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_protobuf_todolist_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Todo); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -214,7 +400,7 @@ func file_protobuf_todolist_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_protobuf_todolist_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
@@ -242,6 +428,7 @@ const _ = grpc.SupportPackageIsVersion6
 type TodolistClient interface {
 	AddTodo(ctx context.Context, in *TodoRequest, opts ...grpc.CallOption) (*TodoReply, error)
 	RemoveTodo(ctx context.Context, in *TodoRequest, opts ...grpc.CallOption) (*TodoReply, error)
+	GetTodoAll(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*TodoAllResponse, error)
 }
 
 type todolistClient struct {
@@ -270,10 +457,20 @@ func (c *todolistClient) RemoveTodo(ctx context.Context, in *TodoRequest, opts .
 	return out, nil
 }
 
+func (c *todolistClient) GetTodoAll(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*TodoAllResponse, error) {
+	out := new(TodoAllResponse)
+	err := c.cc.Invoke(ctx, "/protobuf.Todolist/getTodoAll", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TodolistServer is the server API for Todolist service.
 type TodolistServer interface {
 	AddTodo(context.Context, *TodoRequest) (*TodoReply, error)
 	RemoveTodo(context.Context, *TodoRequest) (*TodoReply, error)
+	GetTodoAll(context.Context, *EmptyRequest) (*TodoAllResponse, error)
 }
 
 // UnimplementedTodolistServer can be embedded to have forward compatible implementations.
@@ -285,6 +482,9 @@ func (*UnimplementedTodolistServer) AddTodo(context.Context, *TodoRequest) (*Tod
 }
 func (*UnimplementedTodolistServer) RemoveTodo(context.Context, *TodoRequest) (*TodoReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveTodo not implemented")
+}
+func (*UnimplementedTodolistServer) GetTodoAll(context.Context, *EmptyRequest) (*TodoAllResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTodoAll not implemented")
 }
 
 func RegisterTodolistServer(s *grpc.Server, srv TodolistServer) {
@@ -327,6 +527,24 @@ func _Todolist_RemoveTodo_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Todolist_GetTodoAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EmptyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TodolistServer).GetTodoAll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.Todolist/GetTodoAll",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TodolistServer).GetTodoAll(ctx, req.(*EmptyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Todolist_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "protobuf.Todolist",
 	HandlerType: (*TodolistServer)(nil),
@@ -338,6 +556,10 @@ var _Todolist_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RemoveTodo",
 			Handler:    _Todolist_RemoveTodo_Handler,
+		},
+		{
+			MethodName: "getTodoAll",
+			Handler:    _Todolist_GetTodoAll_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
