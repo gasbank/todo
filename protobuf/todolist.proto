@@ -10,14 +10,26 @@ service Todolist {
   rpc addTodo (TodoRequest) returns (TodoReply) {}
 
   rpc RemoveTodo (TodoRequest) returns (TodoReply) {}
+
+  rpc getTodoAll (EmptyRequest) returns (TodoAllResponse) {}
 }
 
 
 message TodoRequest {
-  string item = 1;
+  Todo item = 1;
 }
 
 // 20000: 200 OK
 message TodoReply {
   string responseCode = 1;
+}
+
+message EmptyRequest {
+}
+
+message TodoAllResponse {
+  repeated Todo items = 1;
+}
+message Todo {
+  string todo = 1;
 }
