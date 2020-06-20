@@ -36,8 +36,13 @@ static int hostgetversion(lua_State* l) {
 }
 
 void ShowLuaConsole(bool* p_open, lua_State * l);
+int grpcworld_main(int argc, char** argv);
+
 
 int main(int argc, char *argv[]) {
+
+    grpcworld_main(argc, argv);
+
   char buff[FILENAME_MAX];
   GetCurrentDir( buff, FILENAME_MAX );
   printf("Current working dir: %s\n", buff);
