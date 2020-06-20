@@ -127,7 +127,7 @@ else()
 endif()
 
 # Proto file
-get_filename_component(hw_proto "protos/helloworld.proto" ABSOLUTE)
+get_filename_component(hw_proto "${CMAKE_CURRENT_SOURCE_DIR}/../protos/helloworld.proto" ABSOLUTE)
 get_filename_component(hw_proto_path "${hw_proto}" PATH)
 
 # Generated sources
@@ -135,6 +135,7 @@ set(hw_proto_srcs "${CMAKE_CURRENT_BINARY_DIR}/helloworld.pb.cc")
 set(hw_proto_hdrs "${CMAKE_CURRENT_BINARY_DIR}/helloworld.pb.h")
 set(hw_grpc_srcs "${CMAKE_CURRENT_BINARY_DIR}/helloworld.grpc.pb.cc")
 set(hw_grpc_hdrs "${CMAKE_CURRENT_BINARY_DIR}/helloworld.grpc.pb.h")
+
 add_custom_command(
       OUTPUT "${hw_proto_srcs}" "${hw_proto_hdrs}" "${hw_grpc_srcs}" "${hw_grpc_hdrs}"
       COMMAND ${_PROTOBUF_PROTOC}
@@ -144,6 +145,26 @@ add_custom_command(
         --plugin=protoc-gen-grpc="${_GRPC_CPP_PLUGIN_EXECUTABLE}"
         "${hw_proto}"
       DEPENDS "${hw_proto}")
+
+
+get_filename_component(tl_proto "${CMAKE_CURRENT_SOURCE_DIR}/../protobuf/todolist.proto" ABSOLUTE)
+get_filename_component(tl_proto_path "${tl_proto}" PATH)
+      
+set(tl_proto_srcs "${CMAKE_CURRENT_BINARY_DIR}/todolist.pb.cc")
+set(tl_proto_hdrs "${CMAKE_CURRENT_BINARY_DIR}/todolist.pb.h")
+set(tl_grpc_srcs "${CMAKE_CURRENT_BINARY_DIR}/todolist.grpc.pb.cc")
+set(tl_grpc_hdrs "${CMAKE_CURRENT_BINARY_DIR}/todolist.grpc.pb.h")
+
+add_custom_command(
+      OUTPUT "${tl_proto_srcs}" "${tl_proto_hdrs}" "${tl_grpc_srcs}" "${tl_grpc_hdrs}"
+      COMMAND ${_PROTOBUF_PROTOC}
+      ARGS --grpc_out "${CMAKE_CURRENT_BINARY_DIR}"
+        --cpp_out "${CMAKE_CURRENT_BINARY_DIR}"
+        -I "${tl_proto_path}"
+        --plugin=protoc-gen-grpc="${_GRPC_CPP_PLUGIN_EXECUTABLE}"
+        "${tl_proto}"
+      DEPENDS "${tl_proto}")
+      
 
 # Include generated *.pb.h files
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
@@ -164,8 +185,11 @@ include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 add_executable(NetworkWorld
     main.cpp
     grpcworld.cpp
+    todolistclient.cpp
     ${hw_proto_srcs}
     ${hw_grpc_srcs}
+    ${tl_proto_srcs}
+    ${tl_grpc_srcs}
     luaconsole.cpp
     imgui/imconfig.h
     imgui/imgui.cpp
@@ -183,6 +207,15 @@ add_executable(NetworkWorld
     imgui/imgui_impl_sdl.h
 )
 
+# 테스트용 서버
+add_executable(greeter_server
+  greeter_server.cc
+  ${hw_proto_srcs}
+  ${hw_grpc_srcs}
+  ${tl_proto_srcs}
+  ${tl_grpc_srcs}
+)
+
 #set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS /SUBSYSTEM:CONSOLE)
 
 #find_library(GLAD_LIBRARY glad PATHS ${CMAKE_SOURCE_DIR}/glad)
@@ -193,7 +226,15 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
     SDL2main
     SDL2-static
     lua
-    gRPC::grpc++
+    ${_REFLECTION}
+    ${_GRPC_GRPCPP}
+    ${_PROTOBUF_LIBPROTOBUF}
+)
+
+target_link_libraries(greeter_server
+    ${_REFLECTION}
+    ${_GRPC_GRPCPP}
+    ${_PROTOBUF_LIBPROTOBUF}
 )
 
 add_custom_command(

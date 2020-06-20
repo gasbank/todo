@@ -23,69 +23,43 @@
 #include <grpcpp/grpcpp.h>
 
 #ifdef BAZEL_BUILD
-#include "examples/protos/helloworld.grpc.pb.h"
+#include "examples/protos/todolist.grpc.pb.h"
 #else
-#include "helloworld.grpc.pb.h"
+#include "todolist.grpc.pb.h"
 #endif
 
 using grpc::Channel;
 using grpc::ClientContext;
 using grpc::Status;
-using helloworld::HelloRequest;
-using helloworld::HelloReply;
-using helloworld::Greeter;
+using protobuf::Todolist;
+using protobuf::TodoRequest;
+using protobuf::TodoReply;
 
-class GreeterClient {
+class TodoListClient {
 public:
-    GreeterClient(std::shared_ptr<Channel> channel)
-        : stub_(Greeter::NewStub(channel)) {}
+    TodoListClient(std::shared_ptr<Channel> channel)
+        : stub_(Todolist::NewStub(channel)) {}
 
     // Assembles the client's payload, sends it and presents the response back
     // from the server.
-    std::string SayHello(const std::string& user) {
+    std::string AddTodo(const std::string& todoItem) {
         // Data we are sending to the server.
-        HelloRequest request;
-        request.set_name(user);
+        TodoRequest request;
+        request.set_item(todoItem);
 
         // Container for the data we expect from the server.
-        HelloReply reply;
+        TodoReply reply;
 
         // Context for the client. It could be used to convey extra information to
         // the server and/or tweak certain RPC behaviors.
         ClientContext context;
 
         // The actual RPC.
-        Status status = stub_->SayHello(&context, request, &reply);
+        Status status = stub_->addTodo(&context, request, &reply);
 
         // Act upon its status.
         if (status.ok()) {
-            return reply.message() + reply.message2() + reply.message3();
-        }
-        else {
-            std::cout << status.error_code() << ": " << status.error_message()
-                << std::endl;
-            return "RPC failed";
-        }
-    }
-
-    std::string AddNewTodo(const std::string& user) {
-        // Data we are sending to the server.
-        HelloRequest request;
-        request.set_name(user);
-
-        // Container for the data we expect from the server.
-        HelloReply reply;
-
-        // Context for the client. It could be used to convey extra information to
-        // the server and/or tweak certain RPC behaviors.
-        ClientContext context;
-
-        // The actual RPC.
-        Status status = stub_->AddNewTodo(&context, request, &reply);
-
-        // Act upon its status.
-        if (status.ok()) {
-            return reply.message() + reply.message2() + reply.message3();
+            return reply.responsecode();
         }
         else {
             std::cout << status.error_code() << ": " << status.error_message()
@@ -95,10 +69,10 @@ public:
     }
 
 private:
-    std::unique_ptr<Greeter::Stub> stub_;
+    std::unique_ptr<Todolist::Stub> stub_;
 };
 
-int grpcworld_main(int argc, char** argv) {
+int grpcworld_todolist_main(int argc, char** argv) {
     // Instantiate the client. It requires a channel, out of which the actual RPCs
     // are created. This channel models a connection to an endpoint specified by
     // the argument "--target=" which is the only expected argument.
@@ -125,16 +99,14 @@ int grpcworld_main(int argc, char** argv) {
         }
     }
     else {
-        target_str = "localhost:50051";
+        //target_str = "localhost:50051";
+        target_str = "192.168.35.118:50051";
     }
-    GreeterClient greeter(grpc::CreateChannel(target_str, grpc::InsecureChannelCredentials()));
-    std::string user("world");
-    std::string reply = greeter.SayHello(user);
-    std::cout << "Greeter received: " << reply << std::endl;
 
-    std::string user2("addnewtodouser");
-    std::string reply2 = greeter.AddNewTodo(user2);
-    std::cout << "Greeter addnewtodo received: " << reply2 << std::endl;
+    TodoListClient todoList(grpc::CreateChannel(target_str, grpc::InsecureChannelCredentials()));
+    std::string todoItem("hohoho");
+    std::string reply = todoList.AddTodo(todoItem);
+    std::cout << "TodoReply received: " << reply << std::endl;
 
     return 0;
 }
