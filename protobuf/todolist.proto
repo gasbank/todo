@@ -1,0 +1,23 @@
+
+syntax = "proto3";
+
+option go_package = "github.com/gasbank/todo/protobuf";
+
+package protobuf;
+
+service Todolist {
+
+  rpc addTodo (TodoRequest) returns (TodoReply) {}
+
+  rpc RemoveTodo (TodoRequest) returns (TodoReply) {}
+}
+
+
+message TodoRequest {
+  string item = 1;
+}
+
+// 20000: 200 OK
+message TodoReply {
+  string reponseCode = 1;
+}
