@@ -13,6 +13,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include <grpcpp/grpcpp.h>
 using grpc::Channel;
@@ -40,23 +41,7 @@ private:
     std::unique_ptr<Greeter::Stub> stub_;
 };
 
-
-#ifdef BAZEL_BUILD
-#include "examples/protos/todolist.grpc.pb.h"
-#else
-#include "todolist.grpc.pb.h"
-#endif
-using protobuf::Todolist;
-using protobuf::TodoRequest;
-using protobuf::TodoReply;
-
-class TodoListClient {
-public:
-    TodoListClient(std::shared_ptr<Channel> channel);
-    std::string AddTodo(const std::string& todoItem);
-private:
-    std::unique_ptr<Todolist::Stub> stub_;
-};
+#include "todolistclient.hpp"
 
 const char* ServerAddrItems[] = { "localhost:50051", "192.168.35.118:50051" };
 
@@ -190,17 +175,20 @@ struct LuaConsole {
     if (ImGui::SmallButton("RPC 'Todo.RemoveTodo'")) {
         TodoListClient todolist(grpc::CreateChannel(ServerAddrItems[ServerAddrItemCurrentIdx], grpc::InsecureChannelCredentials()));
         std::string item(TodoInputBuf);
-        std::string reply = todolist.AddTodo(item);
+        std::string reply = todolist.RemoveTodo(item);
         std::cout << "Todo.AddTodo received: " << reply << std::endl;
         AddLog("RPC REPLY: %s\n", reply.c_str());
     }
     ImGui::SameLine();
-    if (ImGui::SmallButton("RPC 'Todo.ListAll'")) {
+    if (ImGui::SmallButton("RPC 'Todo.GetTodoAll'")) {
         TodoListClient todolist(grpc::CreateChannel(ServerAddrItems[ServerAddrItemCurrentIdx], grpc::InsecureChannelCredentials()));
         std::string item(TodoInputBuf);
-        std::string reply = todolist.AddTodo(item);
-        std::cout << "Todo.AddTodo received: " << reply << std::endl;
-        AddLog("RPC REPLY: %s\n", reply.c_str());
+        std::vector<std::string> reply = todolist.GetTodoAll();
+        for (int i = 0; i < reply.size(); i++)
+        {
+            std::cout << "Todo.AddTodo received: " << i << " : " << reply[i] << std::endl;
+            AddLog("RPC REPLY: %s\n", reply[i].c_str());
+        }
     }
     if (ImGui::SmallButton("Add Dummy Text")) {
       AddLog("%d some text", Items.Size);

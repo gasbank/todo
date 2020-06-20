@@ -19,58 +19,112 @@
 #include <iostream>
 #include <memory>
 #include <string>
-
-#include <grpcpp/grpcpp.h>
-
-#ifdef BAZEL_BUILD
-#include "examples/protos/todolist.grpc.pb.h"
-#else
-#include "todolist.grpc.pb.h"
-#endif
+#include <vector>
+#include "todolistclient.hpp"
 
 using grpc::Channel;
 using grpc::ClientContext;
 using grpc::Status;
 using protobuf::Todolist;
 using protobuf::TodoRequest;
+using protobuf::EmptyRequest;
 using protobuf::TodoReply;
+using protobuf::Todo;
+using protobuf::TodoAllResponse;
 
-class TodoListClient {
-public:
-    TodoListClient(std::shared_ptr<Channel> channel)
-        : stub_(Todolist::NewStub(channel)) {}
+TodoListClient::TodoListClient(std::shared_ptr<Channel> channel)
+    : stub_(Todolist::NewStub(channel)) {}
 
-    // Assembles the client's payload, sends it and presents the response back
-    // from the server.
-    std::string AddTodo(const std::string& todoItem) {
-        // Data we are sending to the server.
-        TodoRequest request;
-        request.set_item(todoItem);
+// Assembles the client's payload, sends it and presents the response back
+// from the server.
+std::string TodoListClient::AddTodo(const std::string& todoStr) {
+    // Data we are sending to the server.
+    TodoRequest request;
 
-        // Container for the data we expect from the server.
-        TodoReply reply;
+    Todo* todo = new Todo();
+    todo->set_todo(strdup(todoStr.c_str()));
+    request.set_allocated_item(todo);
 
-        // Context for the client. It could be used to convey extra information to
-        // the server and/or tweak certain RPC behaviors.
-        ClientContext context;
+    // Container for the data we expect from the server.
+    TodoReply reply;
 
-        // The actual RPC.
-        Status status = stub_->addTodo(&context, request, &reply);
+    // Context for the client. It could be used to convey extra information to
+    // the server and/or tweak certain RPC behaviors.
+    ClientContext context;
 
-        // Act upon its status.
-        if (status.ok()) {
-            return reply.responsecode();
-        }
-        else {
-            std::cout << status.error_code() << ": " << status.error_message()
-                << std::endl;
-            return "RPC failed";
-        }
+    // The actual RPC.
+    Status status = stub_->addTodo(&context, request, &reply);
+
+    // Act upon its status.
+    if (status.ok()) {
+        return reply.responsecode();
     }
+    else {
+        std::cout << status.error_code() << ": " << status.error_message()
+            << std::endl;
+        return "RPC failed";
+    }
+}
 
-private:
-    std::unique_ptr<Todolist::Stub> stub_;
-};
+std::string TodoListClient::RemoveTodo(const std::string& todoStr) {
+    // Data we are sending to the server.
+    TodoRequest request;
+
+    Todo* todo = new Todo();
+    todo->set_todo(todoStr.c_str());
+    request.set_allocated_item(todo);
+
+    // Container for the data we expect from the server.
+    TodoReply reply;
+
+    // Context for the client. It could be used to convey extra information to
+    // the server and/or tweak certain RPC behaviors.
+    ClientContext context;
+
+    // The actual RPC.
+    Status status = stub_->RemoveTodo(&context, request, &reply);
+
+    // Act upon its status.
+    if (status.ok()) {
+        return reply.responsecode();
+    }
+    else {
+        std::cout << status.error_code() << ": " << status.error_message()
+            << std::endl;
+        return "RPC failed";
+    }
+}
+    
+std::vector<std::string> TodoListClient::GetTodoAll() {
+    // Data we are sending to the server.
+    EmptyRequest request;
+
+    // Container for the data we expect from the server.
+    TodoAllResponse reply;
+
+    // Context for the client. It could be used to convey extra information to
+    // the server and/or tweak certain RPC behaviors.
+    ClientContext context;
+
+    // The actual RPC.
+    Status status = stub_->getTodoAll(&context, request, &reply);
+
+    std::vector<std::string> todoList;
+    // Act upon its status.
+    if (status.ok()) {
+        for (int i = 0; i < reply.items_size(); i++)
+        {   
+            todoList.push_back(reply.items(i).todo());
+        }
+            
+    }
+    else {
+        std::cout << status.error_code() << ": " << status.error_message()
+            << std::endl;
+        todoList.push_back("RPC failed");
+    }
+    return todoList;
+}
 
 int grpcworld_todolist_main(int argc, char** argv) {
     // Instantiate the client. It requires a channel, out of which the actual RPCs

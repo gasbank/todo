@@ -185,6 +185,7 @@ include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 add_executable(NetworkWorld
     main.cpp
     grpcworld.cpp
+    todolistclient.hpp
     todolistclient.cpp
     ${hw_proto_srcs}
     ${hw_grpc_srcs}
