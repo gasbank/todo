@@ -59,7 +59,7 @@ public:
 
         // Act upon its status.
         if (status.ok()) {
-            return reply.reponsecode();
+            return reply.responsecode();
         }
         else {
             std::cout << status.error_code() << ": " << status.error_message()
