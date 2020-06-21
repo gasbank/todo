@@ -3,13 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
+	pb "github.com/gasbank/todo/protobuf"
 	"github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
+	"google.golang.org/grpc"
 	"log"
 	"net"
-
-	"google.golang.org/grpc"
-	pb "github.com/gasbank/todo/protobuf"
+	"os"
 )
 
 const (
@@ -24,7 +24,7 @@ type server struct {
 
 func (s *server) AddTodo(ctx context.Context, in *pb.TodoRequest) (*pb.TodoReply, error) {
 	log.Printf("Received: %v", in.GetItem().GetTodo())
-	query := `INSERT todos VALUE ?`
+	query := `INSERT INTO todos (todo) VALUES (?)`
 	_, err := db.Exec(query, in.GetItem().GetTodo())
 	if err != nil {
 		return &pb.TodoReply{ResponseCode: "50000" + in.GetItem().GetTodo()}, err
@@ -47,11 +47,15 @@ func (s *server) GetTodoAll(ctx context.Context, in *pb.EmptyRequest) (*pb.TodoA
 
 
 func main() {
+	testPassword := os.Getenv("TODO_DB_TEST_PASSWORD")
+	if len(testPassword) == 0 {
+		testPassword = "password"
+	}
 
 	var err error
 	mysqlConfig := &mysql.Config{
 		User:                 "root",
-		Passwd:               "password",
+		Passwd:               testPassword,
 		Net:                  "tcp",
 		Addr:                 fmt.Sprintf("%s:%s", "127.0.0.1", "3306"),
 		DBName:               "todo_db",
