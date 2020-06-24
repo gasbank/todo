@@ -41,8 +41,20 @@ func (s *server) RemoveTodo(ctx context.Context, in *pb.TodoRequest) (*pb.TodoRe
 	return &pb.TodoReply{ResponseCode: "Hello again " + in.GetItem().GetTodo()}, nil
 }
 func (s *server) GetTodoAll(ctx context.Context, in *pb.EmptyRequest) (*pb.TodoAllResponse, error) {
-	log.Println("Received: %v")
-	return &pb.TodoAllResponse{}, nil
+	log.Println("GetTodoAll called")
+	query := `SELECT * FROM todos`
+	rows, err := db.Query(query)
+	if err != nil {
+		return &pb.TodoAllResponse{Items:nil}, err
+	}
+	var todoList []*pb.Todo
+	for rows.Next() {
+		var todo *pb.Todo
+		err = rows.Scan(&todo)
+		todoList = append(todoList, todo)
+	}
+
+	return &pb.TodoAllResponse{Items:todoList}, nil
 }
 
 
