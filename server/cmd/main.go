@@ -49,8 +49,13 @@ func (s *server) GetTodoAll(ctx context.Context, in *pb.EmptyRequest) (*pb.TodoA
 	}
 	var todoList []*pb.Todo
 	for rows.Next() {
-		var todo *pb.Todo
-		err = rows.Scan(&todo)
+		var todo = &pb.Todo{}
+		var todoStr string
+		err = rows.Scan(&todoStr)
+		if err != nil {
+			log.Fatal(err)
+		}
+		todo.Todo = todoStr
 		todoList = append(todoList, todo)
 	}
 
