@@ -176,7 +176,7 @@ struct LuaConsole {
         TodoListClient todolist(grpc::CreateChannel(ServerAddrItems[ServerAddrItemCurrentIdx], grpc::InsecureChannelCredentials()));
         std::string item(TodoInputBuf);
         std::string reply = todolist.RemoveTodo(item);
-        std::cout << "Todo.AddTodo received: " << reply << std::endl;
+        std::cout << "Todo.RemoveTodo received: " << reply << std::endl;
         AddLog("RPC REPLY: %s\n", reply.c_str());
     }
     ImGui::SameLine();
@@ -186,7 +186,7 @@ struct LuaConsole {
         std::vector<std::string> reply = todolist.GetTodoAll();
         for (int i = 0; i < reply.size(); i++)
         {
-            std::cout << "Todo.AddTodo received: " << i << " : " << reply[i] << std::endl;
+            std::cout << "Todo.GetTodoAll received: " << i << " : " << reply[i] << std::endl;
             AddLog("RPC REPLY: %s\n", reply[i].c_str());
         }
     }
