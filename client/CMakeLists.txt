@@ -187,6 +187,8 @@ add_executable(NetworkWorld
     grpcworld.cpp
     todolistclient.hpp
     todolistclient.cpp
+    greeterclient.hpp
+    greeterclient.cpp
     ${hw_proto_srcs}
     ${hw_grpc_srcs}
     ${tl_proto_srcs}
@@ -262,10 +264,37 @@ add_custom_command(
     DEPENDS ${CMAKE_SOURCE_DIR}/inspect.lua
 )
 
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/logo.bmp
+    COMMAND ${CMAKE_COMMAND} -E copy
+            ${CMAKE_SOURCE_DIR}/logo.bmp
+            ${CMAKE_CURRENT_BINARY_DIR}/logo.bmp
+    DEPENDS ${CMAKE_SOURCE_DIR}/logo.bmp
+)
+
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/me.bmp
+    COMMAND ${CMAKE_COMMAND} -E copy
+            ${CMAKE_SOURCE_DIR}/me.bmp
+            ${CMAKE_CURRENT_BINARY_DIR}/me.bmp
+    DEPENDS ${CMAKE_SOURCE_DIR}/me.bmp
+)
+
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/monster.bmp
+    COMMAND ${CMAKE_COMMAND} -E copy
+            ${CMAKE_SOURCE_DIR}/monster.bmp
+            ${CMAKE_CURRENT_BINARY_DIR}/monster.bmp
+    DEPENDS ${CMAKE_SOURCE_DIR}/monster.bmp
+)
+
 add_custom_target(copy_fonts DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/Hack-Regular.ttf")
 add_custom_target(copy_lua DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/mood.lua")
 add_custom_target(copy_inspect DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/inspect.lua")
+add_custom_target(copy_logo DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/logo.bmp")
+add_custom_target(copy_me DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/me.bmp")
+add_custom_target(copy_monster DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/monster.bmp")
 
-add_dependencies(NetworkWorld copy_fonts copy_lua copy_inspect)
+add_dependencies(NetworkWorld copy_fonts copy_lua copy_inspect copy_logo copy_me copy_monster)
 
 SET_TARGET_PROPERTIES(NetworkWorld PROPERTIES MACOSX_BUNDLE TRUE)
