@@ -21,6 +21,7 @@
 #define GetCurrentDir _getcwd
 #else
 #include <unistd.h>
+#include "main.h"
 #define GetCurrentDir getcwd
 #endif
 
@@ -39,6 +40,23 @@ void ShowLuaConsole(bool* p_open, lua_State* l);
 int grpcworld_main(int argc, char** argv);
 int grpcworld_todolist_main(int argc, char** argv);
 
+void BlitNumbers(Uint32 number, SDL_Surface* numbersSurface, SDL_Surface* gScreenSurface)
+{
+	auto nstr = std::to_string(number);
+	int i = 0;
+	for (auto c : nstr)
+	{
+		auto idx = c - '0';
+		if (idx >= 0 && idx <= 9)
+		{
+			SDL_Rect numberSrcRect = { 32 * idx, 0, 32, 32 };
+			SDL_Rect numberDestRect = { 32 * i, 0, 32, 32 };
+			SDL_BlitSurface(numbersSurface, &numberSrcRect, gScreenSurface, &numberDestRect);
+			i++;
+		}
+	}
+}
+
 int main(int argc, char* argv[])
 {
 	char buff[FILENAME_MAX];
@@ -53,9 +71,11 @@ int main(int argc, char* argv[])
 	SDL_Surface* grassTileSurface = SDL_LoadBMP("logo.bmp");
 	SDL_Surface* meTileSurface = SDL_LoadBMP("me.bmp");
 	SDL_Surface* monsterTileSurface = SDL_LoadBMP("monster.bmp");
+	SDL_Surface* numbersSurface = SDL_LoadBMP("numbers.bmp");
 
 	SDL_SetColorKey(meTileSurface, SDL_TRUE, SDL_MapRGB(meTileSurface->format, 0xFF, 0x00, 0xFF));
 	SDL_SetColorKey(monsterTileSurface, SDL_TRUE, SDL_MapRGB(monsterTileSurface->format, 0xFF, 0x00, 0xFF));
+	SDL_SetColorKey(numbersSurface, SDL_TRUE, SDL_MapRGB(numbersSurface->format, 0xFF, 0x00, 0xFF));
 
 	bool quit = false;
 
@@ -147,12 +167,18 @@ int main(int argc, char* argv[])
 		monsterDestRect.y = 64 * monsterPosR;
 		SDL_BlitSurface(monsterTileSurface, NULL, gScreenSurface, &monsterDestRect);
 
+		BlitNumbers(SDL_GetTicks(), numbersSurface, gScreenSurface);
+
 		SDL_UpdateWindowSurface(gWindow);
 	}
 	SDL_FreeSurface(grassTileSurface);
 	grassTileSurface = NULL;
 	SDL_FreeSurface(meTileSurface);
 	meTileSurface = NULL;
+	SDL_FreeSurface(monsterTileSurface);
+	monsterTileSurface = NULL;
+	SDL_FreeSurface(numbersSurface);
+	numbersSurface = NULL;
 	//Destroy window
 	SDL_DestroyWindow(gWindow);
 	gWindow = NULL;

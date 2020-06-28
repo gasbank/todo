@@ -288,13 +288,22 @@ add_custom_command(
     DEPENDS ${CMAKE_SOURCE_DIR}/monster.bmp
 )
 
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/numbers.bmp
+    COMMAND ${CMAKE_COMMAND} -E copy
+            ${CMAKE_SOURCE_DIR}/numbers.bmp
+            ${CMAKE_CURRENT_BINARY_DIR}/numbers.bmp
+    DEPENDS ${CMAKE_SOURCE_DIR}/numbers.bmp
+)
+
 add_custom_target(copy_fonts DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/Hack-Regular.ttf")
 add_custom_target(copy_lua DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/mood.lua")
 add_custom_target(copy_inspect DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/inspect.lua")
 add_custom_target(copy_logo DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/logo.bmp")
 add_custom_target(copy_me DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/me.bmp")
 add_custom_target(copy_monster DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/monster.bmp")
+add_custom_target(copy_numbers DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/numbers.bmp")
 
-add_dependencies(NetworkWorld copy_fonts copy_lua copy_inspect copy_logo copy_me copy_monster)
+add_dependencies(NetworkWorld copy_fonts copy_lua copy_inspect copy_logo copy_me copy_monster copy_numbers)
 
 SET_TARGET_PROPERTIES(NetworkWorld PROPERTIES MACOSX_BUNDLE TRUE)
