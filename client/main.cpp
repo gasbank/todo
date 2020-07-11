@@ -57,6 +57,41 @@ void BlitNumbers(Uint32 number, SDL_Surface* numbersSurface, SDL_Surface* gScree
 	}
 }
 
+void HandleDirectionKeys(SDL_Keycode sym, int& r, int& c, int monsterPosR, int monsterPosC, bool preventOverlap)
+{
+	//Select surfaces based on key press
+	switch (sym)
+	{
+	case SDLK_UP:
+		if (r > 0 && (preventOverlap == false || (r - 1 != monsterPosR || c != monsterPosC)))
+		{
+			r--;
+		}
+		break;
+
+	case SDLK_DOWN:
+		if (r < 4 && (preventOverlap == false || (r + 1 != monsterPosR || c != monsterPosC)))
+		{
+			r++;
+		}
+		break;
+
+	case SDLK_LEFT:
+		if (c > 0 && (preventOverlap == false || (c - 1 != monsterPosC || r != monsterPosR)))
+		{
+			c--;
+		}
+		break;
+
+	case SDLK_RIGHT:
+		if (c < 9 && (preventOverlap == false || (c + 1 != monsterPosC || r != monsterPosR)))
+		{
+			c++;
+		}
+		break;
+	}
+}
+
 int main(int argc, char* argv[])
 {
 	char buff[FILENAME_MAX];
@@ -72,18 +107,24 @@ int main(int argc, char* argv[])
 	SDL_Surface* meTileSurface = SDL_LoadBMP("me.bmp");
 	SDL_Surface* monsterTileSurface = SDL_LoadBMP("monster.bmp");
 	SDL_Surface* numbersSurface = SDL_LoadBMP("numbers.bmp");
+	SDL_Surface* selectSurface = SDL_LoadBMP("select.bmp");
 
 	SDL_SetColorKey(meTileSurface, SDL_TRUE, SDL_MapRGB(meTileSurface->format, 0xFF, 0x00, 0xFF));
 	SDL_SetColorKey(monsterTileSurface, SDL_TRUE, SDL_MapRGB(monsterTileSurface->format, 0xFF, 0x00, 0xFF));
 	SDL_SetColorKey(numbersSurface, SDL_TRUE, SDL_MapRGB(numbersSurface->format, 0xFF, 0x00, 0xFF));
+	SDL_SetColorKey(selectSurface, SDL_TRUE, SDL_MapRGB(selectSurface->format, 0xFF, 0x00, 0xFF));
 
 	bool quit = false;
 
 	int mePosC = 0;
 	int mePosR = 0;
+	int cursorPosC = 0;
+	int cursorPosR = 0;
 
 	int monsterPosC = 9;
 	int monsterPosR = 2;
+
+	int dirMode = 0;
 
 	//Event handler
 	SDL_Event e;
@@ -99,39 +140,23 @@ int main(int argc, char* argv[])
 			}
 			else if (e.type == SDL_KEYDOWN)
 			{
-				//Select surfaces based on key press
+				if (dirMode == 0)
+				{
+					HandleDirectionKeys(e.key.keysym.sym, mePosR, mePosC, monsterPosR, monsterPosC, true);
+				}
+				else
+				{
+					HandleDirectionKeys(e.key.keysym.sym, cursorPosR, cursorPosC, monsterPosR, monsterPosC, false);
+				}
+
 				switch (e.key.keysym.sym)
 				{
-				case SDLK_UP:
-					if (mePosR - 1 != monsterPosR || mePosC != monsterPosC)
-					{
-						mePosR--;
-					}
-					break;
-
-				case SDLK_DOWN:
-					if (mePosR + 1 != monsterPosR || mePosC != monsterPosC)
-					{
-						mePosR++;
-					}
-					break;
-
-				case SDLK_LEFT:
-					if (mePosC - 1 != monsterPosC || mePosR != monsterPosR)
-					{
-						mePosC--;
-					}
-					break;
-
-				case SDLK_RIGHT:
-					if (mePosC + 1 != monsterPosC || mePosR != monsterPosR)
-					{
-						mePosC++;
-					}
-					break;
-
 				case SDLK_ESCAPE:
 					quit = true;
+					break;
+
+				case SDLK_d:
+					dirMode = dirMode == 0;
 					break;
 
 				default:
@@ -154,18 +179,21 @@ int main(int argc, char* argv[])
 		}
 
 		SDL_Rect meDestRect;
-		meDestRect.w = 64;
-		meDestRect.h = 64;
 		meDestRect.x = 64 * mePosC;
 		meDestRect.y = 64 * mePosR;
+		meDestRect.w = 64;
+		meDestRect.h = 64;
 		SDL_BlitSurface(meTileSurface, NULL, gScreenSurface, &meDestRect);
 
 		SDL_Rect monsterDestRect;
-		monsterDestRect.w = 64;
-		monsterDestRect.h = 64;
 		monsterDestRect.x = 64 * monsterPosC;
 		monsterDestRect.y = 64 * monsterPosR;
+		monsterDestRect.w = 64;
+		monsterDestRect.h = 64;
 		SDL_BlitSurface(monsterTileSurface, NULL, gScreenSurface, &monsterDestRect);
+
+		SDL_Rect selectDestRect = { 64 * cursorPosC, 64 * cursorPosR, 64, 64 };
+		SDL_BlitSurface(selectSurface, NULL, gScreenSurface, &selectDestRect);
 
 		BlitNumbers(SDL_GetTicks(), numbersSurface, gScreenSurface);
 
