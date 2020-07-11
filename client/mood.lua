@@ -6,7 +6,7 @@ print("The lua interpreter version is ", _VERSION)
 
 function mood(b)
 	if (b and major > 0) then
-		return 'mood-happy (행복회로 다시 시도 zlzzlz킼킼)'
+		return 'mood-happy (happy circuit)'
 	elseif (major == 0) then
 		return 'mood_confused'
 	else
@@ -14,7 +14,7 @@ function mood(b)
 	end
 end
 
-local array = {"Lua", "Tutorial", "좋음"}
+local array = {"Lua", "Tutorial", "G.O.O.D."}
 
 function elementIterator (collection)
 
